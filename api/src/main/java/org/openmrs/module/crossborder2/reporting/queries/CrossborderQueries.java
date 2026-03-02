@@ -102,7 +102,7 @@ public class CrossborderQueries {
 		    "select patient_id from %s.etl_crossborder_screening where visit_date between :startDate AND :endDate",
 		    etlSchema);
 	}
-
+	
 	public static String getCrossBorderPatients() {
 		String etlSchema = getEtlSchema();
 		return String.format("select patient_id from %s.etl_crossborder_screening where\n"
@@ -110,20 +110,20 @@ public class CrossborderQueries {
 		        + "or place_of_residence_country = 162884 and nationality in (162883,165752,165639,165744,165765))\n"
 		        + "and visit_date between  :startDate and :endDate", etlSchema);
 	}
-
+	
 	public static String getOtherNationalitiesAccessingCbServices() {
 		String etlSchema = getEtlSchema();
 		return String.format("select patient_id \n" + "FROM %s.etl_crossborder_screening where \n"
 		        + "nationality not in (162883) and\n" + "visit_date between :startDate and :endDate", etlSchema);
 	}
-
+	
 	public static String getResidentsAccessingCbServices() {
 		String etlSchema = getEtlSchema();
 		return String.format("select patient_id \n" + "FROM %s.etl_crossborder_screening where \n"
 		        + "(place_of_residence_country = 162883) and nationality in (162883)  and\n"
 		        + "visit_date between :startDate and :endDate", etlSchema);
 	}
-
+	
 	public static String getNumberOfPatientsTravelledToAnotherCountryWithinTheYear() {
 		String etlSchema = getEtlSchema();
 		return String

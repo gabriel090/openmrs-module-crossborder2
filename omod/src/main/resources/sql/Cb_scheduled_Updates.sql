@@ -1,3 +1,4 @@
+DELIMITER $$
 DROP PROCEDURE IF EXISTS sp_update_etl_crossborder_screening $$
 CREATE PROCEDURE sp_update_etl_crossborder_screening(IN last_update_time DATETIME)
 BEGIN
@@ -223,5 +224,4 @@ DEALLOCATE PREPARE stmt;
 
 SELECT update_script_id;
 END $$
-
--- DELIMITER ;
+DELIMITER ;

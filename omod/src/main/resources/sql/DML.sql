@@ -1,3 +1,4 @@
+DELIMITER $$
 DROP PROCEDURE IF EXISTS get_etl_schema $$
 CREATE PROCEDURE get_etl_schema(OUT etl_schema VARCHAR(200))
 BEGIN
@@ -20,11 +21,11 @@ DROP PROCEDURE IF EXISTS sp_populate_etl_crossborder_screening $$
 CREATE PROCEDURE sp_populate_etl_crossborder_screening()
 BEGIN
     DECLARE etl_schema VARCHAR(200);
-CALL get_etl_schema(etl_schema);
+    CALL get_etl_schema(etl_schema);
 
-SELECT CONCAT("Processing crossborder screening report for schema: ", etl_schema) AS message;
+    SELECT CONCAT("Processing crossborder screening report for schema: ", etl_schema) AS message;
 
-SET @insert_sql = CONCAT('
+    SET @insert_sql = CONCAT('
         INSERT INTO ', etl_schema, '.etl_crossborder_screening
         (patient_id,
          visit_id,
@@ -64,7 +65,7 @@ SET @insert_sql = CONCAT('
         from encounter e
                  inner join
              (
-                 select encounter_type_id, uuid, name from encounter_type where uuid='6536A8A3-7B77-414D-A0F0-E08A7178FF0F'
+                 select encounter_type_id, uuid, name from encounter_type where uuid=''6536A8A3-7B77-414D-A0F0-E08A7178FF0F''
              ) et on et.encounter_type_id=e.encounter_type
                  inner join person p on p.person_id=e.patient_id and p.voided=0
                  left outer join obs o on o.encounter_id=e.encounter_id and o.voided=0
@@ -73,22 +74,22 @@ SET @insert_sql = CONCAT('
         group by e.patient_id, e.encounter_id;
     ');
 
-PREPARE stmt FROM @insert_sql;
-EXECUTE stmt;
-DEALLOCATE PREPARE stmt;
+    PREPARE stmt FROM @insert_sql;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
 
-SELECT CONCAT("Completed processing crossborder screening report for schema: ", etl_schema) AS message;
+    SELECT CONCAT("Completed processing crossborder screening report for schema: ", etl_schema) AS message;
 END $$
 
 DROP PROCEDURE IF EXISTS sp_populate_etl_crossborder_referral $$
 CREATE PROCEDURE sp_populate_etl_crossborder_referral()
 BEGIN
     DECLARE etl_schema VARCHAR(200);
-CALL get_etl_schema(etl_schema);
+    CALL get_etl_schema(etl_schema);
 
-SELECT CONCAT("Processing crossborder referral report for schema: ", etl_schema) AS message;
+    SELECT CONCAT("Processing crossborder referral report for schema: ", etl_schema) AS message;
 
-SET @insert_sql = CONCAT('
+    SET @insert_sql = CONCAT('
         INSERT INTO ', etl_schema, '.etl_crossborder_referral
         (
             patient_id,
@@ -140,7 +141,7 @@ SET @insert_sql = CONCAT('
         from encounter e
                  inner join
              (
-                 select encounter_type_id, uuid, name from encounter_type where uuid='5C6DA02B-51E8-4B3D-BB67-BE8F75C4CCE1'
+                 select encounter_type_id, uuid, name from encounter_type where uuid=''5C6DA02B-51E8-4B3D-BB67-BE8F75C4CCE1''
              ) et on et.encounter_type_id=e.encounter_type
                  inner join person p on p.person_id=e.patient_id and p.voided=0
                  left outer join obs o on o.encounter_id=e.encounter_id and o.voided=0
@@ -149,11 +150,11 @@ SET @insert_sql = CONCAT('
         group by e.patient_id, e.encounter_id;
     ');
 
-PREPARE stmt FROM @insert_sql;
-EXECUTE stmt;
-DEALLOCATE PREPARE stmt;
+    PREPARE stmt FROM @insert_sql;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
 
-SELECT CONCAT("Completed processing crossborder referral report for schema: ", etl_schema) AS message;
+    SELECT CONCAT("Completed processing crossborder referral report for schema: ", etl_schema) AS message;
 END $$
 
 -- ------------------------------------------- running all procedures -----------------------------
@@ -164,14 +165,13 @@ BEGIN
     DECLARE etl_schema VARCHAR(200);
 
     -- Get the ETL schema from helper (for logging)
-CALL get_etl_schema(etl_schema);
+    CALL get_etl_schema(etl_schema);
 
-SELECT CONCAT("Starting first-time crossborder setup for schema: ", etl_schema) AS message;
+    SELECT CONCAT("Starting first-time crossborder setup for schema: ", etl_schema) AS message;
 
-CALL sp_populate_etl_crossborder_screening();
-CALL sp_populate_etl_crossborder_referral();
+    CALL sp_populate_etl_crossborder_screening();
+    CALL sp_populate_etl_crossborder_referral();
 
-SELECT CONCAT("Completed first-time crossborder setup for schema: ", etl_schema) AS message;
+    SELECT CONCAT("Completed first-time crossborder setup for schema: ", etl_schema) AS message;
 END $$
-
 DELIMITER ;

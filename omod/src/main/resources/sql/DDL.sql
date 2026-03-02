@@ -1,3 +1,4 @@
+DELIMITER $$
 DROP PROCEDURE IF EXISTS create_crossborder_etl_tables $$
 CREATE PROCEDURE create_crossborder_etl_tables()
 BEGIN
@@ -119,5 +120,4 @@ DEALLOCATE PREPARE stmt;
 SELECT CONCAT("Successfully created ", etl_schema, ".etl_crossborder_screening table") AS message;
 
 END $$
-
 DELIMITER ;
