@@ -1,5 +1,5 @@
-DELIMITER $$
 DROP PROCEDURE IF EXISTS create_crossborder_etl_tables $$
+
 CREATE PROCEDURE create_crossborder_etl_tables()
 BEGIN
     DECLARE etl_schema VARCHAR(200);
@@ -29,6 +29,7 @@ SET @drop_from_main_screening = CONCAT('DROP TABLE IF EXISTS ', current_schema, 
 PREPARE stmt FROM @drop_from_main_screening;
 EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
+
 SET @drop_etl_referral = CONCAT('DROP TABLE IF EXISTS ', etl_schema, '.etl_crossborder_referral;');
 PREPARE stmt FROM @drop_etl_referral;
 EXECUTE stmt;
@@ -118,6 +119,4 @@ EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
 
 SELECT CONCAT("Successfully created ", etl_schema, ".etl_crossborder_screening table") AS message;
-
-END $$
-DELIMITER ;
+END;
